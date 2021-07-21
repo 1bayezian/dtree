@@ -22,21 +22,14 @@
 
 /* Tree node definition. */
 typedef struct dtnode {
-  int num_members;              /* Number of examples within the subtree
-				   rooted at this node. */
+  int num_members;              /* Number of examples within the subtree rooted at this node. */
   int num_pos;                  /* Number of positive examples in subtree. */
   int num_neg;                  /* Number of negative examples in subtree. */
-
-  /* ---- The following fields are only used for internal nodes. ---- */
   int num_children;             /* Number of children; 0 if a leaf. */
-  struct dtnode **children;     /* Array of pointers to children
-				   subtrees. */
-  int test_attrib;              /* Index of attribute to test at this node,
-				   if non-leaf. */
-  double threshold;             /* Value to test against at this node if
-				   continuous, compare using <. */
+  struct dtnode **children;     /* Array of pointers to children subtrees. */
+  int test_attrib;              /* Index of attribute to test at this node, if non-leaf. */
+  double threshold;             /* Value to test against at this node if continuous, compare using <. */
 
-  /* ---------------------------------------------------------------- */
 } DTNODE;
 
 #include <stdio.h>

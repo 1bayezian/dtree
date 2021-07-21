@@ -34,10 +34,8 @@ DTNODE *CreateDecisionTree(void **data, int num_data, int num_features,
 			   uchar *train_members, int num_train,
 			   SSVINFO *ssvinfo)
 {
-  DTNODE *root;
-
   /* Call the auxiliary recursive subroutine to create the tree. */
-  root = CreateDecisionTreeAux(data, num_data, train_members, num_train,
+  DTNODE *root = CreateDecisionTreeAux(data, num_data, train_members, num_train,
 			       num_features, ssvinfo);
 
   return root;
@@ -72,10 +70,9 @@ DTNODE *CreateDecisionSubTreeBinary(void **data, int num_data,
     num_members_temp = 0;
     ZERO_BITARRAY(members_temp, num_data);
     for (memb = 0; memb < num_data; memb++) {
-      if (READ_BITARRAY(train_members, memb) &&
-	  READ_ATTRIB_B(data, memb, attr) == val) {
-	WRITE_BITARRAY(members_temp, memb, 1);
-	num_members_temp++;
+      if (READ_BITARRAY(train_members, memb) && READ_ATTRIB_B(data, memb, attr) == val) {
+        WRITE_BITARRAY(members_temp, memb, 1);
+        num_members_temp++;
       }
     }
     if (num_members_temp == num_train || num_members_temp == 0) {
@@ -193,11 +190,11 @@ DTNODE *CreateDecisionSubTreeContinuous(void **data, int num_data,
   for (memb = 0; memb < num_data; memb++) {
     if (READ_BITARRAY(train_members, memb)) {
       if (READ_ATTRIB_C(data, memb, attr) < threshold) {
-	WRITE_BITARRAY(members_smaller, memb, 1);
-	num_members_smaller++;
+        WRITE_BITARRAY(members_smaller, memb, 1);
+        num_members_smaller++;
       } else {
-	WRITE_BITARRAY(members_larger, memb, 1);
-	num_members_larger++;
+        WRITE_BITARRAY(members_larger, memb, 1);
+        num_members_larger++;
       }
     }
   }
@@ -258,26 +255,26 @@ DTNODE *CreateDecisionTreeAux(void **data, int num_data,
       create_leaf_node = 1;
     } else {
       switch((ssvinfo->types)[min_gain_attr]) {
-      case 'b': /* Binary min-gain attribute. */
-	node = CreateDecisionSubTreeBinary(data, num_data,
-					   train_members, num_train,
-					   num_features, min_gain_attr,
-					   ssvinfo);
-	break;
-      case 'd':
-	node = CreateDecisionSubTreeDiscrete(data, num_data,
-					     train_members, num_train,
-					     num_features, min_gain_attr,
-					     ssvinfo);
-	break;
-      case 'c':
-	node = CreateDecisionSubTreeContinuous(data, num_data,
-					       train_members, num_train,
-					       num_features, min_gain_attr,
-					       best_threshold, ssvinfo);
-	break;
-      default:
-	USER_ERROR1("type unknown ('%c')", ssvinfo->types[min_gain_attr]);
+        case 'b': /* Binary min-gain attribute. */
+          node = CreateDecisionSubTreeBinary(data, num_data,
+                   train_members, num_train,
+                   num_features, min_gain_attr,
+                   ssvinfo);
+          break;
+        case 'd':
+          node = CreateDecisionSubTreeDiscrete(data, num_data,
+                   train_members, num_train,
+                   num_features, min_gain_attr,
+                   ssvinfo);
+          break;
+        case 'c':
+          node = CreateDecisionSubTreeContinuous(data, num_data,
+                     train_members, num_train,
+                     num_features, min_gain_attr,
+                     best_threshold, ssvinfo);
+          break;
+        default:
+          USER_ERROR1("type unknown ('%c')", ssvinfo->types[min_gain_attr]);
       }
     }
   }

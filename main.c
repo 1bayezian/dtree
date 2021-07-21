@@ -18,7 +18,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
-#include <limits.h>
 
 #include "dt.h"
 #include "prune-dt.h"
@@ -26,7 +25,6 @@
 #include "ssv.h"
 #include "bitarray.h"
 #include "main.h"
-
 
 #define USAGE "\nProduce a decision tree for a set of attributes.\n\n"	 \
               "Usage: %s [ -s <seed> | -b <number>] "		         \
@@ -211,14 +209,6 @@ void BatchMain(void **data, int num_data, int num_features,
 
 int main(int argc, char *argv[])
 {
-  char cwd[PATH_MAX];
-  if (getcwd(cwd, sizeof(cwd)) != NULL) {
-    printf("Current working dir: %s\n", cwd);
-  } else {
-    perror("getcwd() error");
-    return 0;
-  }
-
   char *data_filename, *deref_filename;
   double train_pct, prune_pct, test_pct;
   double train_accuracy, test_accuracy;
@@ -227,9 +217,9 @@ int main(int argc, char *argv[])
   int multiple_input_files;
   char *train_filename, *prune_filename, *test_filename;
   int num_test, num_train, num_prune, num_features, num_data;
-  int depth, count, prev_count;
-  int num_negatives, num_false_negatives;
-  int num_positives, num_false_positives;
+  int count, prev_count;
+  int num_negatives, num_false_negatives, num_positives, num_false_positives;
+
   void **data;
   struct timeval tv;
   unsigned int random_seed;
@@ -358,12 +348,7 @@ int main(int argc, char *argv[])
   /* Create a decision tree and print it */
   PrintSection("Growing decision tree");
 
-  tree = CreateDecisionTree(data, num_data, num_features, prune_pct, test_pct,
-			    train_members, num_train, &ssvinfo);
-
-
-  //PrintSection("Printing decision tree");
-  //PrintDecisionTreeStructure(tree, &ssvinfo);
+  tree = CreateDecisionTree(data, num_data, num_features, prune_pct, test_pct, train_members, num_train, &ssvinfo);
 
   PrintSection("Computing decision tree statistics");
   PrintStats(tree, data, num_data, train_members, num_train, test_members, num_test, &ssvinfo);
@@ -375,8 +360,7 @@ int main(int argc, char *argv[])
 
     prev_count = CountNodes(tree);
 
-    PruneDecisionTree(tree, tree, data, num_data,
-			     prune_members, num_prune, &ssvinfo);
+    PruneDecisionTree(tree, tree, data, num_data, prune_members, num_prune, &ssvinfo);
 
     count = CountNodes(tree);
     

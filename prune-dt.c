@@ -211,17 +211,16 @@ void PruneDecisionTree(DTNODE *root, DTNODE *node,
   double a,b,acc_after,acc_after2;
 
   /* Do nothing if already a leaf. */
-  if (node == NULL || node->num_children == 0)
+  if (node == NULL || node->num_children == 0) {
     return;
-
+  }
 
   /*******************************************************************
-     You could insert the recursive call BEFORE you check the node 
+     Recursively prune the decision tree
   *******************************************************************/
-
-
-  
-
+  for (i = 0; i < node->num_children; i++) {
+    PruneDecisionTree(root, node->children[i], data, num_data, pruning_set, num_prune, ssvinfo);
+  }
 
   /* First, we check the accuracy of the tree assuming we keep the current node */
   acc_before = DecisionTreeAccuracy(root, data, num_data, pruning_set, num_prune, ssvinfo);
@@ -238,7 +237,7 @@ void PruneDecisionTree(DTNODE *root, DTNODE *node,
   node->num_children = save_the_children;
 
   /* If the new accuracy exceeds the old one by more than EPSILON, we'll prune */
-  if ((acc_after-acc_before)>EPSILON) {
+  if ((acc_after - acc_before) > EPSILON) {
 
     /* Only print intermediate results if not in batch mode */
     if (ssvinfo->batch == 0) {
@@ -249,24 +248,11 @@ void PruneDecisionTree(DTNODE *root, DTNODE *node,
     /* Actually remove the children to make this a leaf node */
     FreeDecisionTreeChildren(node);
 
-  } else { 
-
-    /* Only print intermediate results if not in batch mode */
+  } else {
     if (ssvinfo->batch == 0) {
       printf("Not pruning: %s (accuracy: %g -> %g)\n",
 	     ssvinfo->feat_names[node->test_attrib], acc_before, acc_after);
     }
-
-    /*******************************************************************
-       Or you could do the recursive call AFTER you check the node
-       (given that you decided to keep it)
-    *******************************************************************/
-  
-  
-  
-
   }
 
 }
-
-/**************************************************************************/
