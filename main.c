@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#include <limits.h>
 
 #include "dt.h"
 #include "prune-dt.h"
@@ -25,6 +26,7 @@
 #include "ssv.h"
 #include "bitarray.h"
 #include "main.h"
+
 
 #define USAGE "\nProduce a decision tree for a set of attributes.\n\n"	 \
               "Usage: %s [ -s <seed> | -b <number>] "		         \
@@ -209,6 +211,14 @@ void BatchMain(void **data, int num_data, int num_features,
 
 int main(int argc, char *argv[])
 {
+  char cwd[PATH_MAX];
+  if (getcwd(cwd, sizeof(cwd)) != NULL) {
+    printf("Current working dir: %s\n", cwd);
+  } else {
+    perror("getcwd() error");
+    return 0;
+  }
+
   char *data_filename, *deref_filename;
   double train_pct, prune_pct, test_pct;
   double train_accuracy, test_accuracy;

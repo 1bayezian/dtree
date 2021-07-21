@@ -68,14 +68,13 @@ double LogBase2(double x){
    Given the number of positive and negative examples, calculate the
    entropy.  
 
-   *** YOU MUST MODIFY THIS FUNCTION ***
-
    ---------------------------------------------------------------------- */
 
 double Entropy(int num_pos, int num_neg) {
   
-  double entropy=0.0;
-
+  double entropy = 0.0;
+  double total = num_pos + num_neg;
+  entropy = -1 * (num_pos / total) * LogBase2(num_pos / total) - (num_neg / total) * LogBase2(num_neg / total);
 
   return entropy;
 }
